@@ -50,7 +50,7 @@ It referenced [open_manipulator_pick_and_place Example](https://emanual.robotis.
   > ```
 
 
-# Quick Start
+# Implementation
 Tested environment: Ubuntu 18.04 + ros-melodic
    
 Run roscore
@@ -65,7 +65,7 @@ $ roslaunch open_manipulator_controller open_manipulator_controller
 Execute a package that recognizes the balls without any markers.  
 Enter the camera you are using and the diameter of the ball.
 ```
-$ roslaunch ros_manipulator_description ball_pose.launch camera_model:=realsense_d415 user_ball_diameter:=${ball_diameter_in_centimiter}
+$ roslaunch ros_manipulator_description ball_pose.launch camera_model:=realsense_d415 user_ball_diameter:=${ball_diameter_in_centimeter}
 ```
 Execute a package that commands 3 modes.
 ```
