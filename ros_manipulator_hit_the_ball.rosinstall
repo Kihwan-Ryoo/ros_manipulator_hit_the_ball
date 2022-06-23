@@ -1,0 +1,2 @@
+- git: {local-name: ros_manipulator_hit_the_ball_metapkg, uri: 'https://github.com/Kihwan-Ryoo/ros_manipulator_hit_the_ball.git', version: melodic-devel}
+

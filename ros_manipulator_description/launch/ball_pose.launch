@@ -1,0 +1,120 @@
+<launch>
+  <arg name="use_platform"	   default="true" />
+  <arg name="use_state_publisher" default="true"/>
+  <arg name="open_rviz"           default="true"/>
+  <arg name="marker_frame_id"     default="world"/>
+  <arg name="user_ball_diameter"	  default="7.0"/>
+
+  <arg name="camera_model" default="astra_pro" doc="model type [astra_pro, realsense_d435, realsense_d415, raspicam]"/>
+  <arg name="camera_namespace" default="camera"/>
+  <arg name="rgb_camera_info_url"   default="package://open_manipulator_camera/camera_info/$(arg camera_model).yaml" />
+  <arg name="depth_camera_info_url" default="" />
+
+  <group if="$(arg use_state_publisher)">
+    <param name="robot_description"
+          command="$(find xacro)/xacro --inorder '$(find open_manipulator_description)/urdf/open_manipulator_robot.urdf.xacro'"/>
+
+    <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher">
+      <rosparam param="source_list" subst_value="true">["joint_states"]</rosparam>
+    </node>
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  </group>
+
+  <group if="$(arg use_platform)">
+    <group if="$(eval camera_model == 'astra_pro')">
+      <include file="$(find astra_launch)/launch/astra_pro.launch">
+        <arg name="camera"                value="$(arg camera_namespace)"/>
+        <arg name="rgb_camera_info_url"   value="$(arg rgb_camera_info_url)" />
+        <arg name="depth_camera_info_url" value="$(arg depth_camera_info_url)" />
+      </include>
+
+      <node pkg="tf" type="static_transform_publisher" name="camera_frame_to_astra_pro_frame"
+        args="0.0 0.0 0.0 0.0 0.0 0.0 world camera_link 10" />
+
+      <include file="$(find ball_track_alvar)/launch/pr2_indiv_no_depth.launch">
+        <arg name="ball_diameter" value="$(arg user_ball_diameter)" />
+        <arg name="max_new_marker_error" value="0.08" />
+        <arg name="max_track_error" value="0.2" />
+        <arg name="cam_image_topic" value="$(arg camera_namespace)/rgb/image_raw" />
+        <arg name="cam_info_topic" value="$(arg camera_namespace)/rgb/camera_info" />
+        <arg name="output_frame" value="$(arg marker_frame_id)" />
+      </include>
+    </group>
+
+    <group if="$(eval camera_model == 'realsense_d435')">
+      <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <arg name="camera"                value="$(arg camera_namespace)"/>
+        <arg name="enable_pointcloud"     value="false" />
+      </include>
+
+    <node pkg="tf" type="static_transform_publisher" name="camera_frame_to_realsense_frame"
+      args="0.070 0 0.052 0 0 0 link5 camera_link 10" />
+
+      <include file="$(find ball_track_alvar)/launch/pr2_indiv_no_depth.launch">
+        <arg name="ball_diameter" value="$(arg user_ball_diameter)" />
+        <arg name="max_new_marker_error" value="0.08" />
+        <arg name="max_track_error" value="0.2" />
+        <arg name="cam_image_topic" value="$(arg camera_namespace)/color/image_raw" />
+        <arg name="cam_info_topic" value="$(arg camera_namespace)/color/camera_info" />
+        <arg name="output_frame" value="$(arg marker_frame_id)" />
+      </include>
+    </group>
+
+    <!-- add realsense_d415 -->
+    <group if="$(eval camera_model == 'realsense_d415')">
+      <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <arg name="camera"                value="$(arg camera_namespace)"/>
+        <arg name="enable_pointcloud"     value="true" />
+        <arg name="filters"               value="pointcloud" />
+        <arg name="initial_reset"         value="true" />
+        <arg name="enable_sync"           value="true" />
+      </include>
+
+    <node pkg="tf" type="static_transform_publisher" name="camera_frame_to_realsense_frame"
+      args="0.070 0.025 0.052 0 0 0 link5 camera_link 10" />
+
+      <include file="$(find ball_track_alvar)/launch/pr2_indiv_no_depth.launch">
+        <arg name="ball_diameter" value="$(arg user_ball_diameter)" />
+        <arg name="max_new_marker_error" value="0.08" />
+        <arg name="max_track_error" value="0.2" />
+        <arg name="cam_image_topic" value="$(arg camera_namespace)/color/image_raw" />
+        <arg name="cam_info_topic" value="$(arg camera_namespace)/color/camera_info" />
+        <arg name="output_frame" value="$(arg marker_frame_id)" />
+      </include>
+    </group>
+
+    <group if="$(eval camera_model == 'raspicam')">
+      <node pkg="image_transport" type="republish" name="republish"
+        args="compressed in:=raspicam_node/image raw out:=raspicam_node/image_raw"/>
+
+    <node pkg="tf" type="static_transform_publisher" name="camera_frame_to_raspicam_frame"
+      args="0.070 0 0.052 -1.57 0 -1.57 link5 raspicam 10" />
+
+      <include file="$(find ball_track_alvar)/launch/pr2_indiv_no_depth.launch">
+        <arg name="ball_diameter" value="$(arg user_ball_diameter)" />
+        <arg name="max_new_marker_error" value="0.08" />
+        <arg name="max_track_error" value="0.2" />
+        <arg name="cam_image_topic" value="/raspicam_node/image_raw" />
+        <arg name="cam_info_topic" value="/raspicam_node/camera_info" />
+        <arg name="output_frame" value="$(arg marker_frame_id)" />
+      </include>
+    </group>
+  </group>
+
+  <group unless="$(arg use_platform)">
+      <include file="$(find ball_track_alvar)/launch/pr2_indiv_no_depth.launch">
+      <arg name="ball_diameter" value="$(arg user_ball_diameter)" />
+      <arg name="max_new_marker_error" value="0.08" />
+      <arg name="max_track_error" value="0.2" />
+      <arg name="cam_image_topic" value="$(arg camera_namespace)/rgb/image_raw" />
+      <arg name="cam_info_topic" value="$(arg camera_namespace)/rgb/camera_info" />
+      <arg name="output_frame" value="$(arg marker_frame_id)" />
+    </include>
+  </group>
+
+  <group if="$(arg open_rviz)">
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+      args="-d $(find ros_manipulator_description)/rviz/ball.rviz"/>
+  </group>
+</launch>

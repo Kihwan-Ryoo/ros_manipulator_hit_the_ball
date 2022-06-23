@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ros_manipulator_hit_the_ball</name>
+  <version>1.0.0</version>
+  <description>The ros_manipulator_hit_the_ball package,
+  which is an example of OpenManipulator I made by editing open_manipulator_pick_and_place a bit</description>
+  <author email="rgh137@naver.com">Kihwan Ryoo</author>
+  <maintainer email="rgh137@naver.com">Kihwan Ryoo</maintainer>
+  <url type="repository">https://github.com/Kihwan-Ryoo/ros_manipulator_hit_the_ball</url>
+  <license>Apache 2.0</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>open_manipulator_msgs</depend>
+  <depend>ball_track_alvar_msgs</depend>
+</package>

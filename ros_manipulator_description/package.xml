@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ros_manipulator_description</name>
+  <version>1.0.0</version>
+  <description>
+    To find BALL and For OpenManipulator 3D model description, it depends ball_track_alvar packages.
+  </description>
+  <license>Apache 2.0</license>
+  <author email="thlim@robotis.com">Darby Lim</author>
+  <maintainer email="pyo@robotis.com">Pyo</maintainer>
+  <url type="website">http://wiki.ros.org/open_manipulator_ar_markers</url>
+  <url type="website">http://wiki.ros.org/open_manipulator_description</url>
+  <url type="emanual">http://emanual.robotis.com/docs/en/platform/openmanipulator</url>
+  <url type="repository">https://github.com/ROBOTIS-GIT/open_manipulator_perceptions</url>
+  <url type="bugtracker">https://github.com/ROBOTIS-GIT/open_manipulator_perceptions/issues</url>
+  <url type="repository">https://github.com/ROBOTIS-GIT/open_manipulator</url>
+  <url type="bugtracker">https://github.com/ROBOTIS-GIT/open_manipulator/issues</url>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>ball_track_alvar</depend>
+  <depend>ball_track_alvar_msgs</depend>
+  <depend>image_transport</depend>
+  <depend>image_proc</depend>
+  <depend>joint_state_publisher</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>xacro</depend>
+  <depend>urdf</depend>
+</package>
