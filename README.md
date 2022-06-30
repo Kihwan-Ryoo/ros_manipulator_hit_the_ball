@@ -60,7 +60,7 @@ $ roscore
 After run roscore, Run the controller of OpenMANIPULATOR.  
 It works only when a real robot arm is connected.
 ```
-$ roslaunch open_manipulator_controller open_manipulator_controller 
+$ roslaunch open_manipulator_controller open_manipulator_controller.launch 
 ```
 Execute a package that recognizes the balls without any markers.  
 Enter the camera you are using and the diameter of the ball.
